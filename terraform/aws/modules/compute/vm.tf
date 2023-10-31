@@ -1,4 +1,3 @@
-# SECURITY GROUP
 resource "aws_security_group" "sg_public" {
     name   = "sg_public"
     vpc_id = "${var.rede_id}"
@@ -33,8 +32,6 @@ resource "aws_security_group" "sg_public" {
     }
 
 }
-
-# EC2 INSTANCE
 
 data "template_file" "cloud_init" {
     template = "${file("./modules/compute/init/cloud_init.sh")}"

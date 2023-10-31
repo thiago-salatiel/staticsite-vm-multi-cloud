@@ -50,33 +50,9 @@ resource "azurerm_network_interface_security_group_association" "nic-to-nsg" {
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-# resource "azurerm_linux_virtual_machine" "vm" {
-#   name                  = "staticsite-vm"
-#   location            = "${var.location}"
-#   resource_group_name = "${var.rg_name}"
-#   network_interface_ids = [azurerm_network_interface.nic.id]
-#   size                  = "Standard_DS1_v2"
-#   os_disk {
-#     name                 = "OsDisk"
-#     caching              = "ReadWrite"
-#     storage_account_type = "Premium_LRS"
-#   }
-#   source_image_reference {
-#     publisher = "Canonical"
-#     offer     = "0001-com-ubuntu-server-jammy"
-#     sku       = "22_04-lts-gen2"
-#     version   = "latest"
-#   }
-#   computer_name  = "staticsite-vm"
-#   admin_username = var.username
-#   admin_ssh_key {
-#     username   = var.username
-#     public_key = jsondecode(azapi_resource_action.ssh_public_key_gen.output).publicKey
-#   }
-#   # boot_diagnostics {
-#   #   storage_account_uri = azurerm_storage_account.my_storage_account.primary_blob_endpoint
-#   # }
-# }
+data "template_file" "cloud_init" {
+    template = "${file("./modules/compute/init/cloud_init.sh")}"
+}
 
 resource "azurerm_virtual_machine" "vm" {
   name                             = "staticsite-vm"
@@ -86,7 +62,6 @@ resource "azurerm_virtual_machine" "vm" {
   vm_size                          = "Standard_DS1_v2"
   delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
-
   storage_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-jammy"
@@ -103,6 +78,7 @@ resource "azurerm_virtual_machine" "vm" {
     computer_name  = "staticsite-vm"
     admin_username = "vmuser"
     admin_password = "Password1234!"
+    custom_data    = "${base64encode(data.template_file.cloud_init.rendered)}"
   }
   os_profile_linux_config {
     disable_password_authentication = false
