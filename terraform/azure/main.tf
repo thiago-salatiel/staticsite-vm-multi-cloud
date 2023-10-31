@@ -1,7 +1,6 @@
-module "resource_group" {
-    source      = "./modules/resource_group"
+module "rg" {
+    source      = "./modules/rg"
     rg_name     = "${var.rg_name}"
-    rg_location = "${var.rg_location}"
 }
 
 # module "rede" {
