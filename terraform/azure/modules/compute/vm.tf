@@ -1,39 +1,42 @@
-resource "azurerm_resource_group" "rg-staticsite" {
-  provider = azurerm.cloud
-  name     = "rg-staticsite"
-  location = "eastus"
-}
+resource "azurerm_network_interface" "nic" {
+  name                = "staticsite-vm-nic"
+  location            = "${var.location}"
+  resource_group_name = "${var.rg_name}"
 
-resource "azurerm_storage_account" "storage_account" {
-  provider                 = azurerm.cloud
-  name                     = "lalalalala"
-  resource_group_name      = azurerm_resource_group.rg-staticsite.name
-  location                 = azurerm_resource_group.rg-staticsite.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  account_kind             = "StorageV2"
-  static_website {
-    index_document     = "index.html"
-    error_404_document = "error.html"
+  ip_configuration {
+    name                          = "testconfiguration1"
+    subnet_id                     = "${var.subnet_id}"
+    private_ip_address_allocation = "Dynamic"
   }
 }
- 
-resource "azurerm_storage_blob" "index" {
-  provider               = azurerm.cloud
-  name                   = "index.html"
-  storage_account_name   = azurerm_storage_account.storage_account.name
-  storage_container_name = "$web"
-  type                   = "Block"
-  content_type           = "text/html"
-  source                 = "../../app/index.html"
-}
 
-resource "azurerm_storage_blob" "error" {
-  provider               = azurerm.cloud
-  name                   = "error.html"
-  storage_account_name   = azurerm_storage_account.storage_account.name
-  storage_container_name = "$web"
-  type                   = "Block"
-  content_type           = "text/html"
-  source                 = "../../app/error.html"
+resource "azurerm_virtual_machine" "vm" {
+  name                             = "staticsite-vm"
+  location                         = azurerm_resource_group.example.location
+  resource_group_name              = azurerm_resource_group.example.name
+  network_interface_ids            = [azurerm_network_interface.nic.id]
+  vm_size                          = "Standard_DS1_v2"
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
+
+  storage_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+  storage_os_disk {
+    name              = "myosdisk1"
+    caching           = "ReadWrite"
+    create_option     = "FromImage"
+    managed_disk_type = "Standard_LRS"
+  }
+  os_profile {
+    computer_name  = "hostname"
+    admin_username = "testadmin"
+    admin_password = "Password1234!"
+  }
+  os_profile_linux_config {
+    disable_password_authentication = false
+  }
 }
