@@ -8,10 +8,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.78.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.5"
-    }
+    # random = {
+    #   source  = "hashicorp/random"
+    #   version = ">= 3.5"
+    # }
   }
   backend "azurerm" {
     resource_group_name  = "rg-staticsite-vm-tf"
@@ -24,4 +24,7 @@ terraform {
 provider "azurerm" {
   features {}
   skip_provider_registration = true
+}
+
+provider "azapi" {
 }
