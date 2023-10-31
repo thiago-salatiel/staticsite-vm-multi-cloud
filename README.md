@@ -1,0 +1,1 @@
+# staticsite-vm-multi-cloud
