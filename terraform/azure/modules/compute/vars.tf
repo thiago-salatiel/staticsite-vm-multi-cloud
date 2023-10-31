@@ -8,4 +8,9 @@ variable "location" {
     default = "eastus"
 }
 
+variable "username" {
+    type    = string
+    default = "azureadmin"
+}
+
 variable "subnet_id" {}

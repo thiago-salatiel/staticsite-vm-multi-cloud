@@ -12,8 +12,9 @@ module "rede" {
     subnet_cidr = "${var.subnet_cidr}"
 }
 
-# module "compute" {
-#     source    = "./modules/compute"
-#     rg_name   = "${var.rg_name}"
-#     subnet_id = "${module.rede.subnet_id}"
-# }
+module "compute" {
+    source    = "./modules/compute"
+    rg_name   = "${var.rg_name}"
+    location  = "${var.location}"
+    subnet_id = "${module.rede.subnet_id}"
+}
