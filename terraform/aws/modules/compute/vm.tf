@@ -1,72 +1,49 @@
-resource "aws_s3_bucket" "bucket" {
-  provider = aws.cloud
-  bucket   = "lalala"
+# SECURITY GROUP
+resource "aws_security_group" "sg_public" {
+    name   = "sg_public"
+    vpc_id = "${var.rede_id}"
+    
+    egress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
+    ingress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["${var.rede_cidr}"]
+    }
+
+    ingress {
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    
+    ingress {
+        description = "TCP/80 from All"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+
 }
 
-resource "aws_s3_bucket_ownership_controls" "bucket-ownership" {
-  provider = aws.cloud
-  bucket   = aws_s3_bucket.bucket.id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
+# EC2 INSTANCE
+
+data "template_file" "cloud_init" {
+    template = "${file("./modules/compute/init/cloud_init.sh")}"
 }
 
-resource "aws_s3_bucket_public_access_block" "bucket-public-access" {
-  provider                = aws.cloud
-  bucket                  = aws_s3_bucket.bucket.id
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-resource "aws_s3_bucket_acl" "bucket-acl" {
-  depends_on = [
-    aws_s3_bucket_ownership_controls.bucket-ownership,
-    aws_s3_bucket_public_access_block.bucket-public-access,
-  ]
-  provider = aws.cloud
-  bucket   = aws_s3_bucket.bucket.id
-  acl      = "public-read"
-}
-
-resource "aws_s3_bucket_website_configuration" "bucket-website-configuration" {
-  provider = aws.cloud
-  bucket   = aws_s3_bucket.bucket.id
-  index_document {
-    suffix = "index.html"
-  }
-  error_document {
-    key = "error.html"
-  }
-}
-
-variable "website_endpoint" {
-  default = "true"
-}
-
-output "aws_s3_bucket_website_endpoint" {
-  value = "http://${var.website_endpoint == "true" ? aws_s3_bucket_website_configuration.bucket-website-configuration.website_endpoint : ""}"
-}
-
-resource "aws_s3_object" "bucket-objects" {
-  depends_on = [
-    aws_s3_bucket_acl.bucket-acl,
-  ]
-  provider     = aws.cloud
-  bucket       = aws_s3_bucket.bucket.id
-  for_each     = fileset("../../app/", "*")
-  key          = each.value
-  source       = "../../app/${each.value}"
-  acl          = "public-read"
-  content_type = "text/html"
-  etag         = md5(file("../../app/${each.value}"))
-}
-
-resource "aws_s3_bucket_versioning" "bucket-versioning" {
-  provider = aws.cloud
-  bucket   = aws_s3_bucket.bucket.id
-  versioning_configuration {
-    status = "Enabled"
-  }
+resource "aws_instance" "instance" {
+    ami                    = "${var.ami}"
+    instance_type          = "t2.micro"
+    subnet_id              = "${var.subnet_id}"
+    vpc_security_group_ids = [aws_security_group.sg_public.id]
+    user_data              = "${base64encode(data.template_file.cloud_init.rendered)}"
 }
