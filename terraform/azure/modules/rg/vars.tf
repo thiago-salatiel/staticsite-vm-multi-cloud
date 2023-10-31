@@ -5,5 +5,5 @@ variable "rg_name" {
 
 variable "rg_location" {
     type    = string
-    default = "brazilsouth"
+    default = "eastus"
 }
