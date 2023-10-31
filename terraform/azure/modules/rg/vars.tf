@@ -3,7 +3,7 @@ variable "rg_name" {
     default = "rg-default"
 }
 
-variable "rg_location" {
+variable "location" {
     type    = string
     default = "eastus"
 }
