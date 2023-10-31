@@ -1,6 +1,6 @@
 module "rg" {
-    source      = "./modules/rg"
-    rg_name     = "${var.rg_name}"
+    source  = "./modules/rg"
+    rg_name = "${var.rg_name}"
 }
 
 # module "rede" {
