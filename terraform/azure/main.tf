@@ -10,11 +10,13 @@ module "rede" {
     location    = "${var.location}"
     vnet_cidr   = "${var.vnet_cidr}"
     subnet_cidr = "${var.subnet_cidr}"
+    depends_on  = [module.rg]
 }
 
 module "compute" {
-    source    = "./modules/compute"
-    rg_name   = "${var.rg_name}"
-    location  = "${var.location}"
-    subnet_id = "${module.rede.subnet_id}"
+    source     = "./modules/compute"
+    rg_name    = "${var.rg_name}"
+    location   = "${var.location}"
+    subnet_id  = "${module.rede.subnet_id}"
+    depends_on = [module.rede]
 }
