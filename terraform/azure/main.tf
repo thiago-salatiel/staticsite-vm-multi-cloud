@@ -1,3 +1,9 @@
+module "resource_group" {
+    source      = "./modules/resource_group"
+    rg_name     = "${var.rg_name}"
+    rg_location = "${var.rg_location}"
+}
+
 # module "rede" {
 #     source      = "./modules/rede"
 #     # rede_cidr   = "${var.rede_cidr}"
