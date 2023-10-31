@@ -3,6 +3,7 @@ resource "azurerm_public_ip" "public-ip" {
   location            = "${var.location}"
   resource_group_name = "${var.rg_name}"
   allocation_method   = "Dynamic"
+  domain_name_label   = "${var.fqdn}"
 }
 
 resource "azurerm_network_security_group" "nsg" {

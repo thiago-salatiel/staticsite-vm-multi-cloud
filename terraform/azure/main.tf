@@ -17,6 +17,7 @@ module "compute" {
     source     = "./modules/compute"
     rg_name    = "${var.rg_name}"
     location   = "${var.location}"
+    fqdn       = "${var.fqdn}"
     subnet_id  = "${module.rede.subnet_id}"
     depends_on = [module.rede]
 }

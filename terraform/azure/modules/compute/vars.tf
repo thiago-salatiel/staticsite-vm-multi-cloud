@@ -13,4 +13,9 @@ variable "username" {
     default = "azureadmin"
 }
 
+variable "fqdn" {
+    type    = string
+    default = "fqdn-default"
+}
+
 variable "subnet_id" {}
