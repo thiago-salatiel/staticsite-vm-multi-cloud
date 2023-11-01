@@ -14,9 +14,9 @@ terraform {
     # }
   }
   backend "azurerm" {
-    resource_group_name  = "rg-staticsite-vm-tf"
-    storage_account_name = "staticsitevmkbtf001"
-    container_name       = "tfstate"
+    resource_group_name  = "RG_VM_MULTI_CLOUD"
+    storage_account_name = "rm551050"
+    container_name       = "vm-multi-cloud"
     key                  = "terraform.tfstate"
   }
 }

@@ -10,5 +10,5 @@ variable "subnet_cidr" {
 
 variable "ami" {
     type    = string
-    default = "ami-0f409bae3775dc8e5"
+    default = "ami-01eccbf80522b562b"
 }

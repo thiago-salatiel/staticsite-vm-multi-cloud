@@ -1,11 +1,11 @@
 variable "rg_name" {
     type    = string
-    default = "rg-staticsite-vm"
+    default = "RG_VM_MULTI_CLOUD"
 }
 
 variable "location" {
     type    = string
-    default = "brazilsouth"
+    default = "EastUS"
 }
 
 variable "vnet_cidr" {
