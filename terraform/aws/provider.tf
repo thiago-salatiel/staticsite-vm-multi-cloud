@@ -8,7 +8,7 @@ terraform {
   backend "s3" {
     bucket         = "tfstate-vm-multi-cloud"
     key            = "terraform.tfstate"
-    dynamodb_table = "vm-multi-cloud-thiago"
+    dynamodb_table = "terraform_state"
     region         = "us-east-1"
   }
 }
