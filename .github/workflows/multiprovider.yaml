@@ -48,7 +48,7 @@ jobs:
       # run : terraform -chdir=./terraform/aws plan -input=false -destroy -out tfplan
 
     - name: Step 08 - Checkov (Security Scanning Setup)
-      run : checkov --directory ./terraform
+      run : checkov --directory ./terraform/aws
 
     - name: Step 09 - Terraform Apply
       run : terraform -chdir=./terraform/aws apply -auto-approve -input=false tfplan
@@ -94,7 +94,7 @@ jobs:
       # run : terraform -chdir=./terraform/azure plan -input=false -destroy -out tfplan
     
     - name: Step 08 - Checkov (Security Scanning Setup)
-      run : checkov --directory ./terraform
+      run : checkov --directory ./terraform/azure
 
     - name: Step 09 - Terraform Apply
       run : terraform -chdir=./terraform/azure apply -auto-approve -input=false tfplan
