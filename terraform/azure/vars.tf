@@ -1,6 +1,6 @@
 variable "rg_name" {
     type    = string
-    default = "RG_VM_MULTI_CLOUD"
+    default = "rg-staticsite-vm"
 }
 
 variable "location" {
